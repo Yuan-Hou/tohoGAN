@@ -10,19 +10,19 @@ class Gen(nn.Module):
             # 7
             nn.ConvTranspose2d(in_channels=128,out_channels=64,kernel_size=3,stride=2,padding=1,bias=False),
             nn.BatchNorm2d(64),
-            nn.LeakyReLU(0.2,inplace=True),
+            nn.ReLU(inplace=True),
             # 14
             nn.ConvTranspose2d(in_channels=64,out_channels=32,kernel_size=3,stride=2,padding=1,bias=False),
             nn.BatchNorm2d(32),
-            nn.LeakyReLU(0.2,inplace=True),
+            nn.ReLU(inplace=True),
             # 28
             nn.ConvTranspose2d(in_channels=32,out_channels=16,kernel_size=3,stride=2,padding=1,bias=False),
             nn.BatchNorm2d(16),
-            nn.LeakyReLU(0.2,inplace=True),
+            nn.ReLU(inplace=True),
             # 56
             nn.ConvTranspose2d(in_channels=16,out_channels=8,kernel_size=3,stride=2,padding=1,bias=False),
             nn.BatchNorm2d(8),
-            nn.LeakyReLU(0.2,inplace=True),
+            nn.ReLU(inplace=True),
             # 112
             nn.ConvTranspose2d(in_channels=8,out_channels=4,kernel_size=3,stride=2,padding=1,bias=True),
             nn.Sigmoid()
