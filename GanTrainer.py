@@ -43,7 +43,7 @@ exampleNoise = torch.randn(1,256,1,1).to(device)
 for epoch in range(0,epochs):
     totalDLoss = 0
     totalGLoss = 0
-    if (epoch)%5==0:
+    if (epoch)%3==0:
         torch.save(D.state_dict(),"D.pth")
         torch.save(G.state_dict(),"G.pth")
         G.eval()
@@ -52,7 +52,7 @@ for epoch in range(0,epochs):
         G.train()
     D.train()
     for n,img in enumerate(dataloader):
-        if epoch%5==0:
+        if epoch%10==0:
             optD.zero_grad()
             
             realOut = D(img)
