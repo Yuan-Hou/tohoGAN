@@ -10,7 +10,11 @@ print("使用 {}".format(device))
 
 imgPath = r'thDataset'
 batchSize = 16
-epochs = 10000
+epochs = 100000
+lr = 0.0003
+# Beta1 hyperparam for Adam optimizers
+beta1 = 0.5
+
 
 allData = AvatarData(imgPath)
 
@@ -28,8 +32,8 @@ if(os.path.exists("G.pth")):
 if(os.path.exists("D.pth")):
     D.load_state_dict(torch.load("D.pth",map_location=torch.device(device)))
     
-optG = torch.optim.Adam(G.parameters(),lr=0.02)
-optD = torch.optim.ASGD(D.parameters(),lr=0.002)
+optG = torch.optim.Adam(G.parameters(), lr=lr, betas=(beta1, 0.999),weight_decay=0.001)
+optD = torch.optim.Adam(D.parameters(), lr=lr, betas=(beta1, 0.999))
 
 lossFn = nn.BCELoss().to(device)
 
@@ -48,7 +52,7 @@ for epoch in range(0,epochs):
         torch.save(G.state_dict(),"G.pth")
         G.eval()
         gen = G(exampleNoise)
-        torchvision.utils.save_image(gen.data,"Gen/%s.png"%(epoch),normalize = True)
+        torchvision.utils.save_image(gen.data,"Gen/%5d.png"%(epoch),normalize = True)
         G.train()
     D.train()
     optG.zero_grad()
@@ -61,7 +65,7 @@ for epoch in range(0,epochs):
     optG.step()
     
     totalGLoss += pretendLoss
-    if(epoch%5==0):
+    if(epoch%50==0):
         for n,img in enumerate(dataloader):
             optD.zero_grad()
 
