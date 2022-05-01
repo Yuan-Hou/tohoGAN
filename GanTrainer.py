@@ -8,7 +8,7 @@ import torch
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("使用 {}".format(device))
 
-imgPath = r'thDataset'
+imgPath = r'quanDataset'
 batchSize = 16
 epochs = 100000
 lr = 0.0003
