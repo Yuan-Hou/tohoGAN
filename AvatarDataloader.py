@@ -31,18 +31,18 @@ class AvatarData(Dataset):
         normTrans = transforms.Compose(
             [
                 transforms.ToPILImage(),
-                transforms.Resize((224,224)),
+                transforms.Resize((96,96)),
                 transforms.ToTensor(),
-                transforms.Normalize((0.5, 0.5, 0.5,0.5), (0.5, 0.5, 0.5,0.5))
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
             ]
         )
         extendTrans = transforms.Compose(
             [
                 transforms.ToPILImage(),
-                transforms.Resize((224,224)),
+                transforms.Resize((96,96)),
                 transforms.transforms.RandomHorizontalFlip(1),
                 transforms.ToTensor(),
-                transforms.Normalize((0.5, 0.5, 0.5,0.5), (0.5, 0.5, 0.5,0.5))
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
             ]
         )
         for p,_,fs in os.walk(imgPath):
@@ -50,7 +50,7 @@ class AvatarData(Dataset):
                 fp = str(os.path.join(p,f))
                 print(fp)
                 img = cv.imdecode(np.fromfile(fp,dtype=np.uint8),-1)
-                img = cv.cvtColor(img,cv.COLOR_RGBA2BGRA)
+                img = cv.cvtColor(img,cv.COLOR_RGBA2BGR)
                 
                 img1 = normTrans(img).float()
                 img2 = extendTrans(img).float()

@@ -9,7 +9,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print("使用 {}".format(device))
 
 imgPath = r'quanDataset'
-batchSize = 16
+batchSize = 8
 epochs = 100000
 lr = 0.0003
 # Beta1 hyperparam for Adam optimizers
@@ -32,7 +32,7 @@ if(os.path.exists("G.pth")):
 if(os.path.exists("D.pth")):
     D.load_state_dict(torch.load("D.pth",map_location=torch.device(device)))
     
-optG = torch.optim.Adam(G.parameters(), lr=lr, betas=(beta1, 0.999),weight_decay=0.001)
+optG = torch.optim.Adam(G.parameters(), lr=lr, betas=(beta1, 0.999))
 optD = torch.optim.Adam(D.parameters(), lr=lr, betas=(beta1, 0.999))
 
 lossFn = nn.BCELoss().to(device)
@@ -47,25 +47,9 @@ exampleNoise = torch.randn(1,256,1,1).to(device)
 for epoch in range(0,epochs):
     totalDLoss = 0
     totalGLoss = 0
-    if (epoch)%50==0:
-        torch.save(D.state_dict(),"D.pth")
-        torch.save(G.state_dict(),"G.pth")
-        G.eval()
-        gen = G(exampleNoise)
-        torchvision.utils.save_image(gen.data,"Gen/%5d.png"%(epoch),normalize = True)
-        G.train()
-    D.train()
-    optG.zero_grad()
-        
-    noises.data.copy_(torch.randn(batchSize, 256, 1, 1))
-    fakeImg = G(noises)
-    output = D(fakeImg)
-    pretendLoss = lossFn(output,allTrue)
-    pretendLoss.backward()
-    optG.step()
     
-    totalGLoss += pretendLoss
-    if(epoch%50==0):
+    
+    if (epoch)%10==0:
         for n,img in enumerate(dataloader):
             optD.zero_grad()
 
@@ -82,6 +66,24 @@ for epoch in range(0,epochs):
             optD.step()
 
             totalDLoss += realLoss+fakeLoss
+            
+    optG.zero_grad()
+
+    noises.data.copy_(torch.randn(batchSize, 256, 1, 1))
+    fakeImg = G(noises)
+    output = D(fakeImg)
+    pretendLoss = lossFn(output,allTrue)
+    pretendLoss.backward()
+    optG.step()
+    
+    totalGLoss += pretendLoss
+    if (epoch)%50==0:
+        torch.save(D.state_dict(),"D.pth")
+        torch.save(G.state_dict(),"G.pth")
+        G.eval()
+        gen = G(exampleNoise)
+        torchvision.utils.save_image(gen.data,"Gen/%05d.png"%(epoch),normalize = True)
+        G.train()
     print("%d:%.3f,%.3f"%(epoch,totalDLoss,totalGLoss))
     
         
