@@ -26,11 +26,11 @@ G,D = Gen(),Disc()
 G = G.to(device)
 D = D.to(device)
     
-if(os.path.exists("G.pth")):
-    G.load_state_dict(torch.load("G.pth",map_location=torch.device(device)))
+# if(os.path.exists("G.pth")):
+#     G.load_state_dict(torch.load("G.pth",map_location=torch.device(device)))
     
-if(os.path.exists("D.pth")):
-    D.load_state_dict(torch.load("D.pth",map_location=torch.device(device)))
+# if(os.path.exists("D.pth")):
+#     D.load_state_dict(torch.load("D.pth",map_location=torch.device(device)))
     
 optG = torch.optim.Adam(G.parameters(), lr=lr, betas=(beta1, 0.999))
 optD = torch.optim.Adam(D.parameters(), lr=lr, betas=(beta1, 0.999))
